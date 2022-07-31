@@ -1,5 +1,5 @@
 use rand::{thread_rng, Rng};
-use std::{self, io};
+use std::{self, io::{self, Read}, process::exit};
 
 const RNGTYPE: [&str; 3] = ["Signed Int", "Unsigned Int", "Float"];
 const RNGSIZE: [&str; 4] = ["8", "16", "32", "64"];
@@ -79,6 +79,7 @@ fn main() {
     while true {
     let mut x = String::new(); // Type selector
     let mut y = String::new(); // Bit length selector
+    let mut c = String::new();
 
     println!("This program generates random numbers.");
 
@@ -87,7 +88,7 @@ fn main() {
             println!("{}. {}", i, RNGTYPE[i - 1]); // Print type options
         }
         io::stdin().read_line(&mut x);
-        let x = x.trim();
+        let x = x.trim().to_string();
         println!();
         println!("How long should it be?");
         if x != "3" {
@@ -99,52 +100,77 @@ fn main() {
             println!("{}. {}", 2, RNGSIZE[3]); //print size options
         }
         io::stdin().read_line(&mut y);
-        let y = y.trim();
+        let y = y.trim().to_string();
         println!();
 
         // Parse selection
-        if x == "1" {
-            if y == "1" {
-                let rnum: u8 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else if y == "2" {
-                let rnum: u16 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else if y == "3" {
-                let rnum: u32 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else if y == "4" {
-                let rnum: u64 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            }
-        } else if x == "2" {
-            if y == "1" {
-                let rnum: i8 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else if y == "2" {
-                let rnum: i16 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else if y == "3" {
-                let rnum: i32 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else if y == "4" {
-                let rnum: i64 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else {
-                println!("Invalid option.")
-            }
-        } else if x == "3" {
-            if y == "1" {
-                let rnum: f32 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else if y == "2" {
-                let rnum: f64 = RandNum::generate_num();
-                println!("Your number is: {}", rnum);
-            } else {
-                println!("Invalid option.")
-            }
-        } else {
-            println!("Invalid option.")
+        rng_type_menu(x, y); // Conversion from string slice to string (Thanks trim)
+
+        println!("Need another one? (Y/N): ");
+        io::stdin().read_line(&mut c);
+        let c = c.trim();
+        if c == "N" || c == "n" {
+            println!("We should do this again sometime.");
+            exit(0);
         }
+    }
+}
+
+
+fn rng_type_menu(x: String, y: String){
+    if x == "1" {
+        rng_size_uint(y);
+    } else if x == "2" {
+        rng_size_int(y);
+    } else if x == "3" {
+        rng_size_float(y);
+    } else {
+        println!("Invalid option.")
+    }
+}
+
+fn rng_size_uint(y: String){
+    if y == "1" {
+        let rnum: u8 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else if y == "2" {
+        let rnum: u16 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else if y == "3" {
+        let rnum: u32 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else if y == "4" {
+        let rnum: u64 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    }
+}
+
+fn rng_size_int(y: String){
+    if y == "1" {
+        let rnum: i8 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else if y == "2" {
+        let rnum: i16 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else if y == "3" {
+        let rnum: i32 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else if y == "4" {
+        let rnum: i64 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else {
+        println!("Invalid option.")
+    }
+}
+
+fn rng_size_float(y: String){
+    if y == "1" {
+        let rnum: f32 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else if y == "2" {
+        let rnum: f64 = RandNum::generate_num();
+        println!("Your number is: {}", rnum);
+    } else {
+        println!("Invalid option.")
     }
 }
